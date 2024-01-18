@@ -1,4 +1,6 @@
 import org.neodatis.odb.*;
+import org.neodatis.odb.core.query.criteria.And;
+import org.neodatis.odb.core.query.criteria.Where;
 import org.neodatis.odb.impl.core.query.values.ValuesCriteriaQuery;
 
 import java.math.BigDecimal;
@@ -44,6 +46,7 @@ public class Ejercicio1 {
                     break;
                 case 6:
                     RealizarConsultasComplejas();
+                    break;
                 case 7:
                     ModificarNombrePais();
                     break;
@@ -185,20 +188,20 @@ public class Ejercicio1 {
 
 
         // Edad maxima y minima de jugadores
-/*
+
         System.out.println("Mostrando la edad minima y maxima de los jugadores: ");
         Values valorMinimo = odb.getValues(new ValuesCriteriaQuery(Jugadores.class).min("edad"));
         Values valorMaximo = odb.getValues(new ValuesCriteriaQuery(Jugadores.class).max("edad"));
 
         ObjectValues max  = valorMaximo.nextValues();
-        BigInteger maximo = (BigInteger) max.getByAlias("edad");
+        BigDecimal maximo = (BigDecimal) max.getByAlias("edad");
         ObjectValues min = valorMinimo.nextValues();
-        BigInteger minimo = (BigInteger) min.getByAlias("edad");
+        BigDecimal minimo = (BigDecimal) min.getByAlias("edad");
 
         System.out.println("La edad maxima es: "+ maximo);
         System.out.println("La edad minima es: "+ minimo);
 
-*/
+
         // Obtener por cada pais numero de jugadores
 
         System.out.println("==========================================================================");
@@ -208,7 +211,7 @@ public class Ejercicio1 {
 
         while (valorContar.hasNext()){
             ObjectValues contar = (ObjectValues) valorContar.nextValues();
-            System.out.println("El numero de jugadores del pais " + contar.getByAlias("nombrePais") + " es: " + contar.getByAlias("nombre"));
+            System.out.println("El numero de jugadores del pais " + contar.getByAlias("nombrePais") + " es --> " + contar.getByAlias("nombre"));
 
         }
 
@@ -220,7 +223,7 @@ public class Ejercicio1 {
 
         while (valorJugMin.hasNext()){
             ObjectValues minDeporte = (ObjectValues) valorJugMin.nextValues();
-            System.out.println("La edad minima de los jugadores que practican " + minDeporte.getByAlias("deporte") + " es: " + minDeporte.getByAlias("edad"));
+            System.out.println("La edad minima de los jugadores que practican " + minDeporte.getByAlias("deporte") + " es --> " + minDeporte.getByAlias("edad"));
 
         }
 
@@ -229,8 +232,16 @@ public class Ejercicio1 {
 
         System.out.println("==========================================================================");
         System.out.println("Mostrando el nombre de los jugadores Españoles que sean mayores de 12 años: ");
+        Values valorJug12 = odb.getValues(new ValuesCriteriaQuery(Jugadores.class, new And().add(Where.like("paises.nombrePais","España")).add(Where.gt("edad", 12))).field("nombre").field("edad"));
 
+        while (valorJug12.hasNext()){
+            ObjectValues jug12Max = (ObjectValues) valorJug12.nextValues();
+            System.out.println("El nombre de los jugadores españoles con mas de 12 años son --> " + jug12Max.getByAlias("nombre"));
 
+        }
+        System.out.println("");
+        
+        
     }
 
     private static void ModificarNombrePais() {
